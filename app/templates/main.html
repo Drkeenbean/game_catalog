@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>VGC - {{ title|default('Video Game Catalog') }}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body>
+
+<header>
+  <h1>
+    <a href="{{ url_for('index') }}">Video Game Catalog</a>
+  </h1>
+  <ul>
+    <li>Genres
+      <ul>
+      {% for genre in genres %}
+        <li>
+            <a href="{{ url_for('listByGenre', genre_id=genre.id) }}">
+                {{ genre.name }}
+            </a>
+        </li>
+      {% endfor %}
+      </ul>
+    </li>
+    <li>Platforms
+      <ul>
+      {% for platform in platforms %}
+        <li>
+            <a href="{{ url_for('listByPlatform', platform_id=platform.id) }}">
+                {{ platform.name }}
+            </a>
+        </li>
+      {% endfor %}
+      </ul>
+    </li>
+  </ul>
+</header>
+
+<!-- TODO: create page framework -->
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

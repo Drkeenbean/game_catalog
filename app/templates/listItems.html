@@ -1,0 +1,20 @@
+{% extends "main.html" %}
+{% block content %}
+
+{% if targetPlatform %}
+<h1>{{ targetPlatform.name }}</h1>
+{% elif targetGenre %}
+<h1>{{ targetGenre.name }}</h1>
+{% endif %}
+
+{% for item in items %}
+<img src="{{ item.picture }}" alt="{{ item.title }} cover">
+<h2>
+    <a href="{{ url_for('showItem', item_id=item.id) }}">
+        {{ item.title }}
+    </a>
+</h2>
+<p>{{ item.genre.name }} - {{ item.platform.name }}</p>
+{% endfor %}
+
+{% endblock %}

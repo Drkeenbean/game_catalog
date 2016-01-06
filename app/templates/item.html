@@ -1,0 +1,7 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>{{ item.title }}</h1>
+<h2>{{ item.genre.name }} - {{ item.platform.name }}</h2>
+{{ item.description|safe }}
+<p>added by {{ item.user.username }}</p>
+{% endblock %}

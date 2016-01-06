@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>Add New Item</h1>
+<form action="{{ url_for('newItem') }}" method="POST">
+    <p>Title</p>
+    <input type="text" name="title">
+
+    <p>Genre</p>
+    <select name="genre">
+    {% for genre in genres %}
+        <option value="{{ genre.id }}">{{ genre.name }}</option>
+    {% endfor %}
+    </select>
+
+    <p>Platform</p>
+    <select name="platform">
+    {% for platform in platforms %}
+        <option value="{{ platform.id }}">{{ platform.name }}</option>
+    {% endfor %}
+    </select>
+
+    <p>Description</p>
+    <textarea name="description"></textarea>
+    <p>Cover URL</p>
+    <input type="text" name="picture">
+    <p>
+        <input type="submit" value="add">
+        <button>
+            <a href="{{ url_for('index') }}">cancel</a>
+        </button>
+    </p>
+</form>
+{% endblock %}

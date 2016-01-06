@@ -1,0 +1,12 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>Recent Items</h1>
+
+{% for item in items %}
+<h2><a href="{{ url_for('showItem', item_id=item.id) }}">{{ item.title }}</a></h2>
+<img src="{{ item.picture }}" alt="{{ item.title }} cover">
+<h3>{{ item.genre.name }} - {{ item.platform.name }}</h3>
+{{ item.description|safe }}
+<p>added by {{ item.user.username }}</p>
+{% endfor %}
+{% endblock %}
