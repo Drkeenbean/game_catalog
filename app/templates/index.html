@@ -8,6 +8,7 @@
 </button>
 
 {% for item in items %}
+<article class="item">
 <h2>
   <a href="{{ url_for('showItem', item_id=item.id) }}">
     {{ item.title }}
@@ -15,7 +16,7 @@
 </h2>
 
 <a href="{{ url_for('showItem', item_id=item.id) }}">
-    <img src="{{ item.picture }}" alt="{{ item.title }} cover">
+    <img class="boxart" src="{{ item.picture }}" alt="{{ item.title }} cover">
 </a>
 
 <h3>{{ item.genre.name }} - {{ item.platform.name }}</h3>
@@ -23,6 +24,7 @@
 {{ item.description|safe }}
 
 <p>added by {{ item.user.username }}</p>
+</article>
 
 {% endfor %}
 {% endblock %}

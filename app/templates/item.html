@@ -1,10 +1,11 @@
 {% extends "main.html" %}
 {% block content %}
+<article class="item">
 <h1>{{ item.title }}</h1>
-<img src="{{ item.picture }}" alt="{{ item.title }} cover">
+<img class="boxart" src="{{ item.picture }}" alt="{{ item.title }} cover">
 <h2>{{ item.genre.name }} - {{ item.platform.name }}</h2>
 {{ item.description|safe }}
-<p>added by {{ item.user.username }}</p>
+<p>added by {{ item.user.username }} <img class="avatar" src="{{ item.user.picture }}"></p>
 <p>
     <button>
         <a href="{{ url_for('editItem', item_id=item.id) }}">edit</a>
@@ -13,4 +14,5 @@
         <a href="{{ url_for('deleteItem', item_id=item.id) }}">delete</a>
     </button>
 </p>
+</article>
 {% endblock %}

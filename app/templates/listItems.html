@@ -9,7 +9,7 @@
 
 {% for item in items %}
 <a href="{{ url_for('showItem', item_id=item.id) }}">
-    <img src="{{ item.picture }}" alt="{{ item.title }} cover">
+    <img class="thumb" src="{{ item.picture }}" alt="{{ item.title }} cover">
 </a>
 <h2>
     <a href="{{ url_for('showItem', item_id=item.id) }}">

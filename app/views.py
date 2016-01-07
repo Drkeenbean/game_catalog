@@ -15,7 +15,7 @@ session = DBSession()
 GENRES = session.query(Genre).order_by(Genre.name)
 PLATFORMS = session.query(Platform).order_by(Platform.name)
 
-loggedIn = False
+loggedIn = True
 
 
 @app.route('/')
@@ -89,6 +89,12 @@ def showItem(item_id):
 def showRecentJSON():
     recentItems = session.query(Item).order_by(desc(Item.id)).limit(5)
     return jsonify(RecentItems=[i.serialize for i in recentItems])
+
+
+@app.route('/allItems_JSON')
+def showAllJSON():
+    allItems = session.query(Item).order_by(Item.id).all()
+    return jsonify(AllItems=[i.serialize for i in allItems])
 
 
 @app.route('/item/<int:item_id>_JSON')

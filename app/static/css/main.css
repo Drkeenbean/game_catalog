@@ -56,7 +56,8 @@ button a, button a:hover {
 
 .heading { text-align: center; }
 
-.avatar { border: 0; height: 30px; width: 30px; border-radius: 100%; }
+.avatar { border: 0; height: 30px; width: 30px; border-radius: 100%;
+    vertical-align: middle; }
 
 .nav { text-align: center; width: 100%; }
     .nav li { position: relative; display: inline; }
@@ -66,9 +67,21 @@ button a, button a:hover {
     .nav ul { position: absolute;
         left:-9999px;
         text-align: left;
-        background: #ffffff; 
+        background: #ffffff;
         border: 1px solid #000000; }
     .nav ul li { display: block; }
+
+.item { border-bottom: solid 1px #666666; padding: .5em; }
+    .item p { text-align: justify; }
+    .item:last-child { border-bottom: none; }
+
+.boxart { float: left;
+    max-width: 25%;
+    margin: .5em 2em 1em 1em; }
+
+.thumb { width: 60px; height: 75px;
+    float: left;
+    margin: 0 1.5em .5em .5em; }
 
 /* responsive breakpoints */
 
