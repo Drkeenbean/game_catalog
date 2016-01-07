@@ -1,18 +1,28 @@
 {% extends "main.html" %}
 {% block content %}
+
+<h1>Recent Items</h1>
+
 <button>
     <a href="{{ url_for('newItem') }}">add game</a>
 </button>
 
-<h1>Recent Items</h1>
-
 {% for item in items %}
-<h2><a href="{{ url_for('showItem', item_id=item.id) }}">{{ item.title }}</a></h2>
+<h2>
+  <a href="{{ url_for('showItem', item_id=item.id) }}">
+    {{ item.title }}
+  </a>
+</h2>
+
 <a href="{{ url_for('showItem', item_id=item.id) }}">
     <img src="{{ item.picture }}" alt="{{ item.title }} cover">
 </a>
+
 <h3>{{ item.genre.name }} - {{ item.platform.name }}</h3>
+
 {{ item.description|safe }}
+
 <p>added by {{ item.user.username }}</p>
+
 {% endfor %}
 {% endblock %}
