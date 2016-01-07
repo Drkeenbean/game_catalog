@@ -1,0 +1,41 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>Edit {{ item.title }}</h1>
+<form action="{{ url_for('editItem', item_id=item.id) }}" method="POST">
+    <p>Title</p>
+    <input type="text" name="title" value="{{ item.title }}" autofocus>
+
+    <p>Genre</p>
+    <select name="genre">
+    {% for genre in genres %}
+        {% if genre.id == item.genre_id %}
+        <option value="{{ genre.id }}" selected>{{ genre.name }}</option>
+        {% else %}
+        <option value="{{ genre.id }}">{{ genre.name }}</option>
+        {% endif %}
+    {% endfor %}
+    </select>
+
+    <p>Platform</p>
+    <select name="platform">
+    {% for platform in platforms %}
+        {% if platform.id == item.platform_id %}
+        <option value="{{ platform.id }}" selected>{{ platform.name }}</option>
+        {% else %}
+        <option value="{{ platform.id }}">{{ platform.name }}</option>
+        {% endif %}    
+    {% endfor %}
+    </select>
+
+    <p>Description</p>
+    <textarea name="description">{{ item.description }}</textarea>
+    <p>Cover URL</p>
+    <input type="text" name="picture" value="{{ item.picture }}">
+    <p>
+        <input type="submit" value="edit">
+        <button>
+            <a href="{{ url_for('showItem', item_id=item.id) }}">cancel</a>
+        </button>
+    </p>
+</form>
+{% endblock %}

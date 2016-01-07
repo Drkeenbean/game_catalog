@@ -8,7 +8,9 @@
 {% endif %}
 
 {% for item in items %}
-<img src="{{ item.picture }}" alt="{{ item.title }} cover">
+<a href="{{ url_for('showItem', item_id=item.id) }}">
+    <img src="{{ item.picture }}" alt="{{ item.title }} cover">
+</a>
 <h2>
     <a href="{{ url_for('showItem', item_id=item.id) }}">
         {{ item.title }}

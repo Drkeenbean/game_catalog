@@ -65,12 +65,40 @@ def showItem(item_id):
 
 @app.route('/item/<int:item_id>/edit', methods=["POST", "GET"])
 def editItem(item_id):
-    pass
+    item = session.query(Item).get(item_id)
+    if request.method == 'POST':
+        item.title = request.form['title']
+        item.description = request.form['description']
+        item.picture = request.form['picture']
+        item.genre_id = request.form['genre']
+        item.platform_id = request.form['platform']
+        session.commit()
+        return redirect(url_for('showItem', item_id=item.id))
+    else:
+        return render_template(
+            'editItem.html',
+            item=item,
+            title="Edit " + item.title,
+            genres=GENRES.all(),
+            platforms=PLATFORMS.all()
+        )
 
 
 @app.route('/item/<int:item_id>/delete', methods=["POST", "GET"])
 def deleteItem(item_id):
-    pass
+    item = session.query(Item).get(item_id)
+    if request.method == 'POST':
+        session.delete(item)
+        session.commit()
+        return redirect(url_for('index'))
+    else:
+        return render_template(
+            'deleteItem.html',
+            item=item,
+            title="Delete " + item.title,
+            genres=GENRES.all(),
+            platforms=PLATFORMS.all()
+        )
 
 
 @app.route('/genre/<int:genre_id>')
