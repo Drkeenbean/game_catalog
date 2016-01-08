@@ -56,6 +56,8 @@ button a, button a:hover {
 
 .heading { text-align: center; }
 
+.content { clear: both; }
+
 .avatar { border: 0; height: 30px; width: 30px; border-radius: 100%;
     vertical-align: middle; }
 

@@ -1,8 +1,11 @@
 from app import app
 from flask import render_template, url_for, request, redirect, jsonify
+from flask import session as login_session
 from models import Base, Item, Genre, Platform
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
+import random
+import string
 
 engine = create_engine('sqlite:///game_catalog.db')
 Base.metadata.bind = engine
@@ -15,15 +18,13 @@ session = DBSession()
 GENRES = session.query(Genre).order_by(Genre.name)
 PLATFORMS = session.query(Platform).order_by(Platform.name)
 
-loggedIn = True
-
 
 @app.route('/')
 def index():
     # Get most recent items from the database
     # to display on front page
     recentItems = session.query(Item).order_by(desc(Item.id)).limit(5)
-    if loggedIn is True:
+    if login_session:
         return render_template(
             'index.html',
             items=recentItems,
@@ -41,8 +42,17 @@ def index():
 
 @app.route('/login')
 def login():
+    # Create a random state token to prevent request forgery
+    state = ''.join(
+        random.choice(
+            string.ascii_uppercase + string.ascii_lowercase + string.digits
+        ) for x in xrange(64)
+    )
+    # Store state token in login_session for later use
+    login_session['state'] = state
     return render_template(
         'login.html',
+        state=login_session['state'],
         title="Login",
         genres=GENRES.all(),
         platforms=PLATFORMS.all()
@@ -51,9 +61,9 @@ def login():
 
 @app.route('/item/new', methods=["POST", "GET"])
 def newItem():
-    if loggedIn is False:
+    if login_session:
         return redirect(url_for('login'))
-    if request.method == 'POST' and loggedIn is True:
+    if request.method == 'POST':
         newItem = Item(
             title=request.form['title'],
             description=request.form['description'],

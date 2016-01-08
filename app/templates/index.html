@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 {% block content %}
 
-<h1>Recent Items</h1>
+<h1 class="heading">Recent Items</h1>
 
 <button>
     <a href="{{ url_for('newItem') }}">add game</a>
@@ -23,7 +23,6 @@
 
 {{ item.description|safe }}
 
-<p>added by {{ item.user.username }}</p>
 </article>
 
 {% endfor %}

@@ -4,17 +4,29 @@
   <title>VGC - {{ title|default('Video Game Catalog') }}</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="google-signin-client_id" content="779801287601-nt1obtfll4r1n08c9o6a6mbo68grueld.apps.googleusercontent.com">
   <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
   <script src="//cdn.ckeditor.com/4.5.6/basic/ckeditor.js"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
 
 <main class="container">
 
 <header>
-  <h1>
+  <h1 class="brand" style="float: left; ">
     <a href="{{ url_for('index') }}">Video Game Catalog</a>
   </h1>
+  <div class="g-signin2" data-onsuccess="onSignIn" style="float: right;"></div>
+  <a href="#" onclick="signOut();">Sign out</a>
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
   <ul class="nav">
     <li><a href="{{ url_for('index') }}">Home</a>
     <li><a href="#">Genres</a>
@@ -40,6 +52,7 @@
       </ul>
     </li>
   </ul>
+
 </header>
 
 <!-- TODO: create page framework -->
@@ -55,6 +68,14 @@
 
 <script>
   CKEDITOR.replace( 'description' );
+
+  function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId());
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail());
+  }
 </script>
 
 </body>
