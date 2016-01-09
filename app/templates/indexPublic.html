@@ -4,6 +4,7 @@
 <h1 class="heading">Recent Items</h1>
 
 {% for item in items %}
+<article class="item"
 <h2>
   <a href="{{ url_for('showItem', item_id=item.id) }}">
     {{ item.title }}
@@ -17,6 +18,8 @@
 <h3>{{ item.genre.name }} - {{ item.platform.name }}</h3>
 
 {{ item.description|safe }}
+
+</article>
 
 {% endfor %}
 {% endblock %}
