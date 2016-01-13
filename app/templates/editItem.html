@@ -23,7 +23,7 @@
         <option value="{{ platform.id }}" selected>{{ platform.name }}</option>
         {% else %}
         <option value="{{ platform.id }}">{{ platform.name }}</option>
-        {% endif %}    
+        {% endif %}
     {% endfor %}
     </select>
 
@@ -32,7 +32,7 @@
     <p>Cover URL</p>
     <input type="text" name="picture" value="{{ item.picture }}">
     <p>
-        <input type="submit" value="edit">
+        <input type="submit" value="save">
         <button>
             <a href="{{ url_for('showItem', item_id=item.id) }}">cancel</a>
         </button>

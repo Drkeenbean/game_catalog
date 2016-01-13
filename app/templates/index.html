@@ -1,6 +1,9 @@
 {% extends "main.html" %}
 {% block content %}
 
+<h6>Logged in as {{ session['username'] }}</h6>
+<img class="avatar" src="{{ session['picture'] }}">
+
 <h1 class="heading">Recent Items</h1>
 
 <button>
