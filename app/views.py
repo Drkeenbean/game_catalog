@@ -10,14 +10,12 @@ import string
 import json
 import requests
 
-# Google sign in imports
-# from googleapiclient import discovery
 # import httplib2
 from oauth2client import client
 
 CLIENT_SECRET_FILE = 'client_secret.json'
 
-engine = create_engine('sqlite:///game_catalog.db')
+engine = create_engine('postgresql:///game_catalog')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -61,9 +59,6 @@ def gSignIn():
         ['profile', 'email'],
         auth_code
     )
-
-    # Get profile info from ID token
-    # userid = credentials.id_token['sub']
 
     # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -137,7 +132,8 @@ def index():
 @app.route('/item/new', methods=["POST", "GET"])
 def newItem():
     if 'username' not in login_session:
-        return redirect(url_for('login'))
+        flash("You must be logged in to add items.")
+        return redirect(url_for('index'))
     if request.method == 'POST':
         newItem = Item(
             title=request.form['title'],

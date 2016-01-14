@@ -2,7 +2,7 @@ from models import Base, Role, User, Genre, Platform, Item
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///game_catalog.db')
+engine = create_engine('postgresql:///game_catalog')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

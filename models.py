@@ -73,5 +73,5 @@ class Item(Base):
             'user':         self.user.username
         }
 
-engine = create_engine('sqlite:///game_catalog.db')
+engine = create_engine('postgresql:///game_catalog')
 Base.metadata.create_all(engine)
