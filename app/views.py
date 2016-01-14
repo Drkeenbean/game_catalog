@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, url_for, \
-    request, redirect, jsonify, make_response
+    request, redirect, jsonify, make_response, flash
 from flask import session as login_session
 from models import Base, Item, Genre, Platform, User
 from sqlalchemy import create_engine, desc
@@ -108,6 +108,8 @@ def gSignOut():
     )
     response.headers['Content-Type'] = 'application/json'
 
+    flash('User signed out')
+
     return redirect(url_for('index'))
 
 
@@ -147,6 +149,9 @@ def newItem():
         )
         session.add(newItem)
         session.commit()
+
+        flash("%s added!" % request.form['title'])
+
         return redirect(url_for('index'))
     else:
         return render_template(
@@ -199,45 +204,56 @@ def showItemJSON(item_id):
 @app.route('/item/<int:item_id>/edit', methods=["POST", "GET"])
 def editItem(item_id):
     item = session.query(Item).get(item_id)
-    if request.method == 'POST':
-        item.title = request.form['title']
-        item.description = request.form['description']
-        item.picture = request.form['picture']
-        item.genre_id = request.form['genre']
-        item.platform_id = request.form['platform']
-        session.commit()
-        return redirect(url_for('showItem', item_id=item.id))
+    owner = item.user_id
+    if 'user_id' in login_session and login_session['user_id'] is owner:
+        if request.method == 'POST':
+            item.title = request.form['title']
+            item.description = request.form['description']
+            item.picture = request.form['picture']
+            item.genre_id = request.form['genre']
+            item.platform_id = request.form['platform']
+            session.commit()
+            return redirect(url_for('showItem', item_id=item.id))
+        else:
+            return render_template(
+                'editItem.html',
+                item=item,
+                title="Edit " + item.title,
+                genres=GENRES.all(),
+                platforms=PLATFORMS.all()
+            )
     else:
-        return render_template(
-            'editItem.html',
-            item=item,
-            title="Edit " + item.title,
-            genres=GENRES.all(),
-            platforms=PLATFORMS.all()
-        )
+        flash("You do not have permission to edit this item.")
+        return redirect(url_for('showItem', item_id=item.id))
 
 
 @app.route('/item/<int:item_id>/delete', methods=["POST", "GET"])
 def deleteItem(item_id):
     item = session.query(Item).get(item_id)
-    if request.method == 'POST':
-        session.delete(item)
-        session.commit()
-        return redirect(url_for('index'))
+    owner = item.user_id
+    if 'user_id' in login_session and login_session['user_id'] is owner:
+        if request.method == 'POST':
+            session.delete(item)
+            session.commit()
+            return redirect(url_for('index'))
+        else:
+            return render_template(
+                'deleteItem.html',
+                item=item,
+                title="Delete " + item.title,
+                genres=GENRES.all(),
+                platforms=PLATFORMS.all()
+            )
     else:
-        return render_template(
-            'deleteItem.html',
-            item=item,
-            title="Delete " + item.title,
-            genres=GENRES.all(),
-            platforms=PLATFORMS.all()
-        )
+        flash("You do not have permission to delete this item")
+        return redirect(url_for('showItem', item_id=item.id))
 
 
 @app.route('/genre/<int:genre_id>')
 def listByGenre(genre_id):
     targetGenre = session.query(Genre).get(genre_id)
-    items = session.query(Item).filter_by(genre_id=genre_id).order_by(Item.title).all()
+    items = session.query(Item).filter_by(
+        genre_id=genre_id).order_by(Item.title).all()
     return render_template(
         'listItems.html',
         items=items,
@@ -251,7 +267,8 @@ def listByGenre(genre_id):
 @app.route('/platform/<int:platform_id>')
 def listByPlatform(platform_id):
     targetPlatform = session.query(Platform).get(platform_id)
-    items = session.query(Item).filter_by(platform_id=platform_id).order_by(Item.title).all()
+    items = session.query(Item).filter_by(
+        platform_id=platform_id).order_by(Item.title).all()
     return render_template(
         'listItems.html',
         items=items,

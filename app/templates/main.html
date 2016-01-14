@@ -51,6 +51,20 @@
 
 <!-- TODO: create page framework -->
 <section class="content">
+  <div class="flash">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+    <h6>{{ message }}</h6>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+  </div>
+
+  {% if 'username' in session %}
+  <h6>Logged in as {{ session['username'] }}</h6>
+  <img class="avatar" src="{{ session['picture'] }}">
+  {% endif %}
 {% block content %}
 {% endblock %}
 </section>

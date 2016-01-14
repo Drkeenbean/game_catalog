@@ -72,7 +72,7 @@ button a, button a:hover {
 
 .brand { clear:both; width: 100%; border-bottom: solid 1px #666666; }
 
-.heading { text-align: center; margin-top: 2em; }
+.heading { text-align: center; margin-top: 1.5em; }
 
 .content { clear: both; }
 
@@ -105,6 +105,14 @@ button a, button a:hover {
 .thumb { width: 60px; height: 75px;
     float: left;
     margin: 0 1.5em .5em .5em; }
+
+.flash { width: 75%;
+    text-align: center;
+    margin: 1em auto; }
+    .flash h6 {
+        padding: .25em;
+        border-radius: 3px;
+        background: #FFCC00; }
 
 /* responsive breakpoints */
 @media screen and (min-width: 719px) {
