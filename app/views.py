@@ -37,13 +37,14 @@ def login():
     )
     # Store state token in login_session for later use
     login_session['state'] = state
-    return render_template(
+    template = render_template(
         'login.html',
         state=login_session['state'],
         title="Login",
         genres=GENRES.all(),
         platforms=PLATFORMS.all()
     )
+    return template
 
 
 @app.route('/gsignin', methods=["POST"])
@@ -66,6 +67,7 @@ def gSignIn():
     answer = requests.get(userinfo_url, params=params)
     data = json.loads(answer.text)
 
+    # Get user info from returned data and store in login_session
     login_session['username'] = data['name']
     login_session['email'] = data['email']
     login_session['picture'] = data['picture']
@@ -75,11 +77,7 @@ def gSignIn():
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
-    print login_session['user_id']
-    print login_session['username']
-    print login_session['email']
-    print login_session['picture']
-
+    # Formats output to be returned as 'result' in login.html
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -114,19 +112,20 @@ def index():
     # to display on front page
     recentItems = session.query(Item).order_by(desc(Item.id)).limit(5)
     if 'username' not in login_session:
-        return render_template(
+        template = render_template(
             'indexPublic.html',
             items=recentItems,
             genres=GENRES.all(),
             platforms=PLATFORMS.all()
         )
     else:
-        return render_template(
+        template = render_template(
             'index.html',
             items=recentItems,
             genres=GENRES.all(),
             platforms=PLATFORMS.all()
         )
+    return template
 
 
 @app.route('/item/new', methods=["POST", "GET"])
@@ -162,7 +161,7 @@ def showItem(item_id):
     item = session.query(Item).get(item_id)
     owner = item.user_id
     if 'user_id' in login_session and login_session['user_id'] is owner:
-        return render_template(
+        template = render_template(
             'item.html',
             item=item,
             title=item.title,
@@ -170,25 +169,42 @@ def showItem(item_id):
             platforms=PLATFORMS.all()
         )
     else:
-        return render_template(
+        template = render_template(
             'itemPublic.html',
             item=item,
             title=item.title,
             genres=GENRES.all(),
             platforms=PLATFORMS.all()
         )
+    return template
+
+
+@app.route('/recents_xml')
+def showRecentXML():
+    recentItems = session.query(Item).order_by(desc(Item.id)).limit(5)
+
+    # Store template to make response
+    # set response headers to XML to force
+    # returned template to display as an XML tree
+    template = render_template('recents.xml', items=recentItems)
+    response = make_response(template)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+
+@app.route('/item/<int:item_id>_xml')
+def showItemXML(item_id):
+    item = session.query(Item).get(item_id)
+    template = render_template('item.xml', item=item)
+    response = make_response(template)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
 
 
 @app.route('/recents_JSON')
 def showRecentJSON():
     recentItems = session.query(Item).order_by(desc(Item.id)).limit(5)
     return jsonify(RecentItems=[i.serialize for i in recentItems])
-
-
-@app.route('/allItems_JSON')
-def showAllJSON():
-    allItems = session.query(Item).order_by(Item.id).all()
-    return jsonify(AllItems=[i.serialize for i in allItems])
 
 
 @app.route('/item/<int:item_id>_JSON')

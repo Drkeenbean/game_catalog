@@ -5,4 +5,9 @@
 <h2>{{ item.genre.name }} - {{ item.platform.name }}</h2>
 {{ item.description|safe }}
 <p>added by {{ item.user.username }} <img class="avatar" src="{{ item.user.picture }}"></p>
+<p>
+  <a href="{{ url_for('showItemJSON', item_id=item.id) }}">json</a>
+  |
+  <a href="{{ url_for('showItemXML', item_id=item.id) }}">xml</a>
+</p>
 {% endblock %}

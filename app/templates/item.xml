@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<item>
+    <id>{{ item.id }}</id>
+    <title>{{ item.title }}</title>
+    <cover>{{ item.picture }}</cover>
+    <description>{{ item.description }}</description>
+    <platform>{{ item.platform.name }}</platform>
+    <genre>{{ item.genre.name }}</genre>
+</item>

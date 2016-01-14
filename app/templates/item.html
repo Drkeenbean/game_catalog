@@ -14,5 +14,10 @@
         <a href="{{ url_for('deleteItem', item_id=item.id) }}">delete</a>
     </button>
 </p>
+<p>
+  <a href="{{ url_for('showItemJSON', item_id=item.id) }}">json</a>
+  |
+  <a href="{{ url_for('showItemXML', item_id=item.id) }}">xml</a>
+</p>
 </article>
 {% endblock %}
