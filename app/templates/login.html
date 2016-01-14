@@ -1,33 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>VGC - {{ title|default('Video Game Catalog') }}</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link href="{{ url_for('static', filename='css/reset.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
-  <!-- google api prerequisites -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-  </script>
-  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
-  </script>
-  <!-- end prerequisites -->
-  <script>
-    function start() {
-      gapi.load('auth2',function() {
-        auth2 = gapi.auth2.init({
-          client_id: '779801287601-nt1obtfll4r1n08c9o6a6mbo68grueld.apps.googleusercontent.com',
-          scope: 'profile email'
-        });
+{% extends "main.html" %}
+
+{% block content %}
+
+<!-- google api prerequisites -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+</script>
+<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+</script>
+<!-- end prerequisites -->
+<script>
+  function start() {
+    gapi.load('auth2',function() {
+      auth2 = gapi.auth2.init({
+        client_id: '779801287601-nt1obtfll4r1n08c9o6a6mbo68grueld.apps.googleusercontent.com',
+        scope: 'profile email'
       });
-    }
-  </script>
-
-</head>
-
-<body>
-
-<main class="container">
+    });
+  }
+</script>
 
 <button id="signinButton">Sign in with Google</button>
 <script>
@@ -72,4 +62,4 @@
   }
 </script>
 
-</body>
+{% endblock %}
