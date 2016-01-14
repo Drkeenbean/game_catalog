@@ -70,14 +70,16 @@ button a, button a:hover {
 
 .container { width: 100%; background: #EEEEEE; margin: 0; padding: 1em; }
 
-.heading { text-align: center; }
+.brand { clear:both; width: 100%; border-bottom: solid 1px #666666; }
+
+.heading { text-align: center; margin-top: 2em; }
 
 .content { clear: both; }
 
 .avatar { border: 0; height: 30px; width: 30px; border-radius: 100%;
     vertical-align: middle; }
 
-.nav { text-align: center; width: 100%; }
+.nav { text-align: center; width: 100%; border-bottom: solid 1px #666666; }
     .nav li { position: relative; display: inline; }
         .nav li:hover > a { background: #333333; color: #ffffff; }
         .nav li:hover ul { left: 0; }
@@ -105,6 +107,9 @@ button a, button a:hover {
     margin: 0 1.5em .5em .5em; }
 
 /* responsive breakpoints */
+@media screen and (min-width: 719px) {
+    .brand { max-width: 50%; clear: none;  border: none; }
+}
 
 @media screen and (min-width: 959px) {
     .container { width: 960px; margin: 0 auto; }

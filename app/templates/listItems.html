@@ -2,9 +2,9 @@
 {% block content %}
 
 {% if targetPlatform %}
-<h1>{{ targetPlatform.name }}</h1>
+<h1 class="heading">{{ targetPlatform.name }}</h1>
 {% elif targetGenre %}
-<h1>{{ targetGenre.name }}</h1>
+<h1 class="heading">{{ targetGenre.name }}</h1>
 {% endif %}
 
 {% for item in items %}

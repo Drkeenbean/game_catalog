@@ -11,8 +11,8 @@ import json
 import requests
 
 # Google sign in imports
-from googleapiclient import discovery
-import httplib2
+# from googleapiclient import discovery
+# import httplib2
 from oauth2client import client
 
 CLIENT_SECRET_FILE = 'client_secret.json'

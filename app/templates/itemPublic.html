@@ -1,6 +1,6 @@
 {% extends "main.html" %}
 {% block content %}
-<h1>{{ item.title }}</h1>
+<h1 class="heading">{{ item.title }}</h1>
 <img class="boxart" src="{{ item.picture }}" alt="{{ item.title }} cover">
 <h2>{{ item.genre.name }} - {{ item.platform.name }}</h2>
 {{ item.description|safe }}
