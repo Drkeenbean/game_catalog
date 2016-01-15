@@ -33,15 +33,22 @@ Setting up the database
 
 4. Type `python models.py` to create the database tables then `python data_fill.py` to populate the database with some neccessary data and some demo items
 
+OPTIONAL - Populate the database
+-------
+
+5. type `psql` again to get back into the PostgreSQL command line
+
+6. type `\c game_catalog` to connect to the game_catalog database
+
+7. type `\i game_catalog.sql` to populate the database with a bunch of demo items 
+
 5. Exit out of psql with `\q`
 
 Running the application
 ---------------
 
-1. Navigate to the cloned tournament directory created from cloning this repo and run `python tournament_test.py`
+1. Navigate to the cloned directory created from cloning this repo and run `python application.py`
 
-2. Make note: HUGE SUCCESS
+2. Open a web browser and navigate to [http://localhost:5000](http://localhost:5000)
 
-Download
--------
-- [Version 1.0](https://github.com/Drkeenbean/game_tournament/master.zip)
+2. Make note: HUGE SUCCESS. A WINNER IS YOU!
