@@ -66,7 +66,8 @@ session.add(newPlatform)
 newItem = Item(
     title="Destiny",
     description="An online shooter from the makers of Halo.",
-    picture="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Destiny_box_art.png/250px-Destiny_box_art.png",
+    picture="https://upload.wikimedia.org/\
+    wikipedia/en/thumb/b/be/Destiny_box_art.png/250px-Destiny_box_art.png",
     genre_id=1,
     platform_id=2,
     user_id=1
