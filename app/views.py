@@ -9,12 +9,13 @@ import random
 import string
 import json
 import requests
-
-# import httplib2
 from oauth2client import client
 
 CLIENT_SECRET_FILE = 'client_secret.json'
 
+# To use SQLite instead of postgresql, uncomment this line
+# and delete or comment the following line
+# engine = create_engine('sqlite:///game_catalog.db')
 engine = create_engine('postgresql:///game_catalog')
 Base.metadata.bind = engine
 
@@ -49,11 +50,16 @@ def login():
 
 @app.route('/gsignin', methods=["POST"])
 def gSignIn():
+    # Verify that the state token sent from the login
+    # page is the same as the state token stored in
+    # login_session
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
+    # Store google authorization code and use it
+    # to get user credentials
     auth_code = request.data
     credentials = client.credentials_from_clientsecrets_and_code(
         CLIENT_SECRET_FILE,
@@ -61,7 +67,7 @@ def gSignIn():
         auth_code
     )
 
-    # Get user info
+    # Get user info from google with stored credentials
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
@@ -72,6 +78,9 @@ def gSignIn():
     login_session['email'] = data['email']
     login_session['picture'] = data['picture']
 
+    # Get user id from database
+    # If None returned, add new user to datbase
+    # from data stored in login_session
     user_id = getUserId(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
@@ -79,9 +88,9 @@ def gSignIn():
 
     # Formats output to be returned as 'result' in login.html
     output = ''
-    output += '<h1>Welcome, '
+    output += '<h2>Welcome, '
     output += login_session['username']
-    output += '!</h1>'
+    output += '!</h2>'
     output += '<img src="'
     output += login_session['picture']
     output += '" style="width: 100px; height: 100px; border-radius: 100%;">'
@@ -91,15 +100,11 @@ def gSignIn():
 
 @app.route('/gsignout')
 def gSignOut():
+    # Delete the login_session and redirect to home page
     del login_session['user_id']
     del login_session['username']
     del login_session['email']
     del login_session['picture']
-
-    response = make_response(
-        json.dumps('Successfully disconnected.'), 200
-    )
-    response.headers['Content-Type'] = 'application/json'
 
     flash('User signed out')
 
@@ -112,6 +117,7 @@ def index():
     # to display on front page
     recentItems = session.query(Item).order_by(desc(Item.id)).limit(5)
     if 'username' not in login_session:
+        # If user not logged in render public template
         template = render_template(
             'indexPublic.html',
             items=recentItems,
@@ -119,6 +125,7 @@ def index():
             platforms=PLATFORMS.all()
         )
     else:
+        # Render private template
         template = render_template(
             'index.html',
             items=recentItems,
@@ -131,9 +138,12 @@ def index():
 @app.route('/item/new', methods=["POST", "GET"])
 def newItem():
     if 'username' not in login_session:
+        # If user not logged in, flash error message and
+        # redirect to index
         flash("You must be logged in to add items.")
         return redirect(url_for('index'))
     if request.method == 'POST':
+        # Create new item and save to database
         newItem = Item(
             title=request.form['title'],
             description=request.form['description'],
@@ -161,6 +171,9 @@ def showItem(item_id):
     item = session.query(Item).get(item_id)
     owner = item.user_id
     if 'user_id' in login_session and login_session['user_id'] is owner:
+        # Check if currently logged-in user
+        # is owner of item and render page
+        # with delete/edit buttons
         template = render_template(
             'item.html',
             item=item,
@@ -169,6 +182,7 @@ def showItem(item_id):
             platforms=PLATFORMS.all()
         )
     else:
+        # Render item public page
         template = render_template(
             'itemPublic.html',
             item=item,
@@ -177,6 +191,9 @@ def showItem(item_id):
             platforms=PLATFORMS.all()
         )
     return template
+
+# API endpoint views
+# XML endpoints
 
 
 @app.route('/recents_xml')
@@ -199,6 +216,9 @@ def showItemXML(item_id):
     response = make_response(template)
     response.headers['Content-Type'] = 'application/xml'
     return response
+# end XML endpoint views
+
+# JSON endpoints
 
 
 @app.route('/recents_JSON')
@@ -211,6 +231,7 @@ def showRecentJSON():
 def showItemJSON(item_id):
     item = session.query(Item).get(item_id)
     return jsonify(Item=item.serialize)
+# end JSON endpoint views
 
 
 @app.route('/item/<int:item_id>/edit', methods=["POST", "GET"])
@@ -218,6 +239,10 @@ def editItem(item_id):
     item = session.query(Item).get(item_id)
     owner = item.user_id
     if 'user_id' in login_session and login_session['user_id'] is owner:
+        # If currently logged-in user is owner of item,
+        # allow them to edit. This will prevent other
+        # users from editing or deleting items they did
+        # not submit, even if they manually type the URL
         if request.method == 'POST':
             item.title = request.form['title']
             item.description = request.form['description']
@@ -235,6 +260,7 @@ def editItem(item_id):
                 platforms=PLATFORMS.all()
             )
     else:
+        # Flash error message and redirect back to item
         flash("You do not have permission to edit this item.")
         return redirect(url_for('showItem', item_id=item.id))
 
@@ -244,6 +270,10 @@ def deleteItem(item_id):
     item = session.query(Item).get(item_id)
     owner = item.user_id
     if 'user_id' in login_session and login_session['user_id'] is owner:
+        # If currently logged-in user is owner of item,
+        # allow them to delete. This will prevent other
+        # users from editing or deleting items they did
+        # not submit, even if they manually type the URL
         if request.method == 'POST':
             session.delete(item)
             session.commit()
@@ -257,12 +287,14 @@ def deleteItem(item_id):
                 platforms=PLATFORMS.all()
             )
     else:
+        # Flash error message and redirect back to item
         flash("You do not have permission to delete this item")
         return redirect(url_for('showItem', item_id=item.id))
 
 
 @app.route('/genre/<int:genre_id>')
 def listByGenre(genre_id):
+    # Display all items of defined Genre
     targetGenre = session.query(Genre).get(genre_id)
     items = session.query(Item).filter_by(
         genre_id=genre_id).order_by(Item.title).all()
@@ -278,6 +310,7 @@ def listByGenre(genre_id):
 
 @app.route('/platform/<int:platform_id>')
 def listByPlatform(platform_id):
+    # Display all items of defined Platform
     targetPlatform = session.query(Platform).get(platform_id)
     items = session.query(Item).filter_by(
         platform_id=platform_id).order_by(Item.title).all()
@@ -292,6 +325,18 @@ def listByPlatform(platform_id):
 
 
 def getUserId(email):
+    """Obtains id of User from database.
+
+    Retrieves id of user based on supplied email
+    address from user table in database if
+    an entry exists.
+
+    Args:
+        email: An email address to query database.
+
+    Returns:
+        A user id or None, if the user cannot be found.
+    """
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
@@ -300,11 +345,30 @@ def getUserId(email):
 
 
 def getUserInfo(user_id):
+    """Obtains user object from database.
+
+    Args:
+        user_id: A user id to query database.
+
+    Returns:
+        A user object with a matching id.
+    """
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def createUser(login_session):
+    """Creates a new User object.
+
+    Uses supplied login_session to create a new
+    User object and add it to the database.
+
+    Args:
+        login_session: A login_session object.
+
+    Returs:
+        The id of the newly-created user.
+    """
     newUser = User(
         username=login_session['username'],
         email=login_session['email'],
@@ -313,5 +377,6 @@ def createUser(login_session):
     )
     session.add(newUser)
     session.commit()
+    # Query for newly-created user to return id
     user = session.query(User).filter_by(email=login_session['email']).one()
     return user.id

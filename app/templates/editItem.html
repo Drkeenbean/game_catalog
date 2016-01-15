@@ -1,6 +1,6 @@
 {% extends "main.html" %}
 {% block content %}
-<h1>Edit {{ item.title }}</h1>
+<h1 class="heading">Edit {{ item.title }}</h1>
 <form action="{{ url_for('editItem', item_id=item.id) }}" method="POST">
     <p>Title</p>
     <input type="text" name="title" value="{{ item.title }}" autofocus>

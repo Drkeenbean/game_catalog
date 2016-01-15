@@ -9,6 +9,11 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Create 3 basic user roles
+# Roles and an admin interface were planned
+# features but I ran out of time they are
+# not used in this implementation but still
+# referenced by the database.
+# I may add them in the future.
 newRole = Role(
     name="Administrator",
     description="User with full control of the site"

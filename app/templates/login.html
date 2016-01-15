@@ -19,16 +19,15 @@
   }
 </script>
 
+<h1 class="heading">Log In</h1>
+
 <button id="signinButton">Sign in with Google</button>
 <script>
   $('#signinButton').click(function() {
-    // signInCallback defined in step 6.
     auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
   });
 </script>
 <div id="result"></div>
-
-</main>
 
 <script>
   function signInCallback(authResult) {
@@ -46,11 +45,13 @@
         processData: false,
         data: authResult['code'],
         success: function(result) {
+          // On successful authentication, display user info
+          // and redirect to / after .5s
           if (result) {
-            $('#result').html('Login successful<br>' + result + '<br>Redirecting ...');
+            $('#result').html('<h1>Login successful</h1>' + result + '<p>Redirecting ...</p><p>Click <a href="{{ url_for("index") }}">here</a> if not automatically redirected.</p>');
             setTimeout(function() {
               window.location.href= "/";
-            }, 4000);
+            }, 500);
           } else if (authResult['error']) {
             console.log('There was an error: ' + authResult['error']);
           } else {
