@@ -1,7 +1,7 @@
 game_catalog - v1.0 01-15-2016
 ===================================
 
-A database to hold participants in a Swiss-style tournament, record and store their matches, and pair them into fair matches according to their win/loss standings.
+A RESTful web application written in python/flask with a postgresql backend to catalog video games. Items can be assigned a platform, genre, and be given rich text descriptions and cover art. Users can log in to the app using google's authentication and add, edit, and delete their own items. Users cannot edit or delete items they did not create and anonymous visitors cannot create new items.
 
 Pre-requisites
 --------------
